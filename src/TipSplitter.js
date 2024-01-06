@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import PeopleTable from "./PeopleTable";
 import CalculationTable from "./CalculationTable";
@@ -10,6 +10,11 @@ import Summary from "./Summary.js";
 
 const TipSplitter = ({handleLogout}) => {
 
+  const calculateTotalHours = useCallback((people) => {
+    const totalHours = people.reduce((total, person) => total + parseFloat(person.hours || 0), 0);
+    setTotalHours(totalHours);
+  }, [setTotalHours]);
+  
     const fetchPersonsFromFirebase = () => {
         const uid = localStorage.getItem('uid');
         const peopleRef = ref(database, `users/${uid}/people`);
@@ -47,13 +52,12 @@ const TipSplitter = ({handleLogout}) => {
       isInitialMount.current = false;
       return;
     }
-
-    // eslint-disable-next-line
-    //calculateTotalHours();
-
+  
+    calculateTotalHours(people);
+  
     // Your logic for handling changes in 'people'
     console.log('People changed:', people);
-  }, [calculateTotalHours, people]);
+  }, [people, calculateTotalHours]);
 
   useEffect(() => {
     fetchPersonsFromFirebase().then((data) => {
@@ -117,11 +121,7 @@ const saveDataToFirebase = (updatedPeople, updatedIdCounter) => {
 
   };
 
-  const calculateTotalHours = () => {
-    console.log("plays")
-    const totalHours = people.reduce((total, person) => total + parseFloat(person.hours || 0), 0);
-    setTotalHours(totalHours);
-  }
+
 
   const handleCalculate = () => {
     // Calcular precio por hora
