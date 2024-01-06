@@ -31,11 +31,11 @@ const PeopleTable = ({ people, onAddPerson, onModifyPerson, idCounter }) => {
   return (
     <div>
       <h3>Lista de personas</h3>
-      <table className="table" style={{width: "100%"}}>
+      <table className="table">
         <thead>
           <tr>
             <th className="d-none">  ID</th>
-            <th style={{width: "30%"}}>Nombre</th>
+            <th>Nombre</th>
             <th>Cantidad de horas</th>
             <th>Dinero a percibir</th>
           </tr>
@@ -46,8 +46,7 @@ const PeopleTable = ({ people, onAddPerson, onModifyPerson, idCounter }) => {
               <td  className="d-none">{person.id}</td>
               <td>
                 <input
-                 style={{width: "100%"}}
-                 size= "15"
+                  size= "9"
                   type="text"
                   name="name"
                   value={person.name}
@@ -58,6 +57,7 @@ const PeopleTable = ({ people, onAddPerson, onModifyPerson, idCounter }) => {
                 <input
                   type="text"
                   name="hours"
+                  size="2"
                   value={person.hours}
                   onChange={(e) => handleModifyClick({ ...person, hours: e.target.value })}
                 />
@@ -70,10 +70,10 @@ const PeopleTable = ({ people, onAddPerson, onModifyPerson, idCounter }) => {
               <input type="text" name="id" disabled value={idCounter + 1} />
             </td>
             <td>
-              <input type="text" name="name" value={newPerson.name} onChange={handleInputChange} />
+              <input size="9" type="text" name="name" value={newPerson.name} onChange={handleInputChange} />
             </td>
             <td>
-              <input type="text" name="hours" value={newPerson.hours} onChange={handleInputChange} />
+              <input size="2" type="text" name="hours" value={newPerson.hours} onChange={handleInputChange} />
             </td>
             <td>
               <button className="btn btn-success" onClick={handleAddClick}>

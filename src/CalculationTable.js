@@ -8,7 +8,7 @@ const CalculationTable = ({ totalHours, totalMoney, setTotalMoney, hourlyRate, h
   return (
     <div>
       <h3>Resumen de Cálculos</h3>
-      <table className="table mt-4">
+      <table className="table">
         <tbody>
           <tr>
             <td>Cantidad de horas</td>

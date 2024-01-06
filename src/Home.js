@@ -58,16 +58,26 @@ const handleLogin = async () => {
 
   return (
     <div>
-      <h1>Tip Splitter</h1>
-      <h2>{isRegistering ? 'Registrarse' : 'Login'}</h2>
-      {isRegistering && (
-        <input type="text" placeholder="Nombre" value={name} onChange={(e) => setName(e.target.value)} />
-      )}
-      <input type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <button onClick={isRegistering ? handleRegister : handleLogin}>
-        {isRegistering ? 'Registrarse' : 'Iniciar Sesión'}
-      </button>
+      <h1 className={"text-center"}>Tip Splitter</h1>
+      <h3 className={"text-center"}>{isRegistering ? 'Registrarse' : 'Login'}</h3>
+      <div className="container">
+        <div className="row text-center justify-content-center">
+          {isRegistering && (
+            <input type="text" placeholder="Nombre" value={name} onChange={(e) => setName(e.target.value)} />
+          )}
+        </div>
+        <div className="row">
+          <input type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </div>
+        <div className="row">
+          <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} />
+        </div>
+        <div className="row">
+          <button onClick={isRegistering ? handleRegister : handleLogin}>
+          {isRegistering ? 'Registrarse' : 'Iniciar Sesión'}
+          </button> 
+        </div>        
+      </div>
       <p onClick={handleToggleRegister}>
         {isRegistering ? '¿Ya tienes una cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
       </p>
