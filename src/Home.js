@@ -1,5 +1,5 @@
 // Home.js
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { auth } from './firebase.js';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword  } from "firebase/auth";
 
@@ -17,21 +17,18 @@ const Home = ({ isAuthenticated, handleAuth}) => {
     setIsRegistering(!isRegistering);
   };
 
-// Home.js
-
-
 const handleRegister = async () => {
     createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
       // Signed in 
-      var user = userCredential.user;
+      //var user = userCredential.user;
       console.log('Usuario registrado con éxito');
       handleAuth();
       // ...
     })
     .catch((error) => {
-      var errorCode = error.code;
-      var errorMessage = error.message;
+      //var errorCode = error.code;
+      //var errorMessage = error.message;
       console.error('Error al registrar usuario', error.message);
       // ..
     });
@@ -50,8 +47,8 @@ const handleLogin = async () => {
         history("tip-splitter");
     })
   .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
+    //const errorCode = error.code;
+    //const errorMessage = error.message;
     console.log('Error al encontrar el usuario' + error);
   });
 

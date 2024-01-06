@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import PeopleTable from "./PeopleTable";
 import CalculationTable from "./CalculationTable";
 import { database } from './firebase.js';
-import { ref, get, set, update, onValue } from 'firebase/database';
+import { ref, get, set, update } from 'firebase/database';
 import Summary from "./Summary.js";
 
 // Define la función exist
@@ -47,11 +47,13 @@ const TipSplitter = ({handleLogout}) => {
       isInitialMount.current = false;
       return;
     }
-    calculateTotalHours();
+
+    // eslint-disable-next-line
+    //calculateTotalHours();
 
     // Your logic for handling changes in 'people'
     console.log('People changed:', people);
-  }, [people]);
+  }, [calculateTotalHours, people]);
 
   useEffect(() => {
     fetchPersonsFromFirebase().then((data) => {
