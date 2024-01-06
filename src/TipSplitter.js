@@ -9,12 +9,18 @@ import Summary from "./Summary.js";
 // Define la función exist
 
 const TipSplitter = ({handleLogout}) => {
+  
+  const [people, setPeople] = useState([]);
+  const [idCounter, setIdCounter] = useState(0);
+  const [totalHours, setTotalHours] = useState(0);
+  const [totalMoney, setTotalMoney] = useState(0);
+  const [hourlyRate, setHourlyRate] = useState(0);
 
   const calculateTotalHours = useCallback((people) => {
     const totalHours = people.reduce((total, person) => total + parseFloat(person.hours || 0), 0);
     setTotalHours(totalHours);
   }, [setTotalHours]);
-  
+
     const fetchPersonsFromFirebase = () => {
         const uid = localStorage.getItem('uid');
         const peopleRef = ref(database, `users/${uid}/people`);
@@ -36,15 +42,8 @@ const TipSplitter = ({handleLogout}) => {
           return data || []; // Return an empty array if data is falsy
         });
       };     
-
-
-  const [people, setPeople] = useState([]);
-  const [idCounter, setIdCounter] = useState(fetchIdCounterFromFirebase() || 0);
-  const [totalHours, setTotalHours] = useState(0);
-  const [totalMoney, setTotalMoney] = useState(0);
-  const [hourlyRate, setHourlyRate] = useState(0);
-  const isInitialMount = useRef(true);
-
+  
+      const isInitialMount = useRef(true);
 
   useEffect(() => {
     if (isInitialMount.current) {
