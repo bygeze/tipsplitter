@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { auth } from './firebase.js';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword  } from "firebase/auth";
+import './Home.css';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -54,33 +55,37 @@ const handleLogin = async () => {
 
   };
   
-
-
   return (
-    <div>
+    <div class="bg-transparent">
+      <div id="logo"></div>
       <h1 className={"text-center"}>Tip Splitter</h1>
-      <h3 className={"text-center"}>{isRegistering ? 'Registrarse' : 'Login'}</h3>
-      <div className="container">
-        <div className="row text-center justify-content-center">
-          {isRegistering && (
-            <input type="text" placeholder="Nombre" value={name} onChange={(e) => setName(e.target.value)} />
-          )}
+      <h3 className={"text-center"}>{isRegistering ? 'Registro' : 'Login'}</h3>
+      <div className="container bg-transparent">
+        <div id="login-box">
+          <div className="row mb-2 text-center justify-content-center ">
+            {isRegistering && (
+              <input className="form-control" type="text" placeholder="Nombre" value={name} onChange={(e) => setName(e.target.value)} />
+            )}
+          </div>
+          <div className="row mb-2  ">
+            <input className="form-control" type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+          <div className="row mb-2">
+            <input className="form-control" type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} />
+          </div>
+          <div className="row mb-2">
+            <button className='btn-primary btn' onClick={isRegistering ? handleRegister : handleLogin}>
+            {isRegistering ? 'Registrarse' : 'Iniciar sesión'}
+            </button> 
+          </div>
+          <div className="row mb-2">
+            <p className="p-0" onClick={handleToggleRegister}>
+            {isRegistering ? '¿Ya tienes una cuenta? ' : '¿No tienes cuenta? '}
+            <span className="toggleRegisterTxtBtn">{isRegistering ? 'Inicia sesión' : 'Regístrate'}</span>
+            </p>
+          </div>     
         </div>
-        <div className="row">
-          <input type="text" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
         </div>
-        <div className="row">
-          <input type="password" placeholder="Contraseña" value={password} onChange={(e) => setPassword(e.target.value)} />
-        </div>
-        <div className="row">
-          <button onClick={isRegistering ? handleRegister : handleLogin}>
-          {isRegistering ? 'Registrarse' : 'Iniciar Sesión'}
-          </button> 
-        </div>        
-      </div>
-      <p onClick={handleToggleRegister}>
-        {isRegistering ? '¿Ya tienes una cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
-      </p>
     </div>
   );
 };

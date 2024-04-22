@@ -4,12 +4,19 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './Home';
 import TipSplitter from './TipSplitter';
 import PrivateRoute from './PrivateRoute';
+import {auth} from './firebase.js';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(JSON.parse(localStorage.getItem('isAuthenticated') || false));
 
   useEffect(() => {
     
+    if(auth) {
+      console.log("database running");
+    } else {
+      console.log("database not");
+    }
+
     // Verificar el estado de autenticación al cargar la aplicación
     const storedAuthStatus = JSON.parse(localStorage.getItem('isAuthenticated'));
     if (storedAuthStatus) {

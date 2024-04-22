@@ -1,0 +1,15 @@
+.ts-topbar {
+    height: 50px;
+    margin-bottom: 10px;
+}
+
+.ts-app-label h1 {
+    line-height: 50px;
+}
+
+.ts-logout {
+    color: rgb(187, 19, 19);
+    cursor: pointer;
+    text-decoration: underline;
+    line-height: 50px;
+}

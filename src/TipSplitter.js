@@ -5,16 +5,27 @@ import CalculationTable from "./CalculationTable";
 import { database } from './firebase.js';
 import { ref, get, set, update } from 'firebase/database';
 import Summary from "./Summary.js";
+import './TipSplitter.css';
 
 // Define la función exist
 
 const TipSplitter = ({handleLogout}) => {
-  
   const [people, setPeople] = useState([]);
   const [idCounter, setIdCounter] = useState(0);
   const [totalHours, setTotalHours] = useState(0);
   const [totalMoney, setTotalMoney] = useState(0);
   const [hourlyRate, setHourlyRate] = useState(0);
+
+  const roundToEuroStep = (number) => {
+    // If number is already an integer, return it
+    if (Number.isInteger(number)) {
+        return number.toFixed(2);
+    }
+
+    // Otherwise, round to the nearest euro step
+    const roundedNumber = Math.round(number);
+    return roundedNumber.toFixed(2);
+  }
 
   const calculateTotalHours = useCallback((people) => {
     const totalHours = people.reduce((total, person) => total + parseFloat(person.hours || 0), 0);
@@ -47,11 +58,12 @@ const TipSplitter = ({handleLogout}) => {
 
   useEffect(() => {
     if (isInitialMount.current) {
+
       // Skip the first render
       isInitialMount.current = false;
       return;
-    }
-  
+    }    
+
     calculateTotalHours(people);
   
     // Your logic for handling changes in 'people'
@@ -141,15 +153,14 @@ const saveDataToFirebase = (updatedPeople, updatedIdCounter) => {
 
   return (
     <div className="container mt-2">
-        <div className="row">
-            <div className="col-8"><h1>TipSplitter </h1></div>
-            <div className={"col-4 justify-content-end"}><button onClick={handleLogout}>Salir</button></div>
+        <div className="row ts-topbar">
+            <div className="col-8 ts-app-label"><h1>TipSplitter</h1></div>
+            <div className={"col-4 justify-content-end ts-logout"}><p className="t-right" onClick={handleLogout}>Cerrar sesión</p></div>
         </div>
 
-
-      <PeopleTable people={people} onAddPerson={handleAddPerson} onModifyPerson={handleModifyPerson} idCounter={idCounter} />
-      <CalculationTable totalHours={totalHours} totalMoney={totalMoney} setTotalMoney={setTotalMoney} hourlyRate={hourlyRate} handleCalculate={handleCalculate} handleCalculateAmounts={handleCalculateAmounts}/>
-      <Summary people={people} />
+      <PeopleTable round={roundToEuroStep} people={people} onAddPerson={handleAddPerson} onModifyPerson={handleModifyPerson} idCounter={idCounter} />
+      <CalculationTable round={roundToEuroStep} totalHours={totalHours} totalMoney={totalMoney} setTotalMoney={setTotalMoney} hourlyRate={hourlyRate} handleCalculate={handleCalculate} handleCalculateAmounts={handleCalculateAmounts}/>
+      <Summary round={roundToEuroStep} people={people} />
     </div>
   );
 };

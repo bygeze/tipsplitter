@@ -1,0 +1,13 @@
+.ct-topbar {
+    height: 50px;
+    background-color: rgb(182, 182, 182);
+    border-radius: 5px 5px 0px 0px;
+}
+
+.ct-topbar h4 {
+    line-height: 50px;
+}
+
+.ct-content {
+    background-color: #fff;
+}

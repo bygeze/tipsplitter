@@ -15,7 +15,23 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const database = getDatabase(app);
+
+var auth_buffer;
+
+try {
+  auth_buffer = getAuth(app);
+} catch (e) {
+  console.log(e);
+  auth_buffer = false;
+}
+
+var database_buffer;
+if(auth_buffer) {
+  database_buffer = getDatabase(app);
+} else {
+  database_buffer = false;
+}
+const auth = auth_buffer;
+const database = database_buffer;
 
 export { auth, database };

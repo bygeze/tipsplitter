@@ -1,7 +1,8 @@
 // Summary.js
 import React from 'react';
+import './Summary.css'
 
-const Summary = ({ people }) => {
+const Summary = ({ round,people }) => {
   // Función para calcular el resumen
   const calculateSummary = () => {
     // Creamos un objeto para almacenar la información resumida
@@ -41,16 +42,24 @@ const Summary = ({ people }) => {
   const summaryData = calculateSummary();
 
   return (
-    <div>
-      <h2>Resumen</h2>
-      {summaryData.map((summaryItem, index) => (
-        <div key={index}>
-          <p>
-            {summaryItem.count} pax * {summaryItem.hours}h = {summaryItem.money}€ ({summaryItem.names.join(', ')})
-          </p>
+
+    <div className="container pb-2">
+      <div className="smr-topbar row">
+        <div className="col-10"><h4>Resumen</h4></div>
+      </div>
+      <div className="smr-content row pt-3">
+        {summaryData
+        .sort((a, b) => b.hours - a.hours)
+        .map((summaryItem, index) => (
+          <div key={index}>
+            <p>
+              {summaryItem.count} pax * {summaryItem.hours}h = {round(summaryItem.money.toFixed(2))}€ ({summaryItem.names.join(', ')})
+            </p>
+          </div>
+        ))}
         </div>
-      ))}
     </div>
+
   );
 };
 

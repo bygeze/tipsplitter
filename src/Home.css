@@ -1,0 +1,29 @@
+#logo {
+    width: 128px;
+    height: 128px;
+    border-radius: 64px;
+    background-image: url("../public/money.png");
+    background-size: 55%;
+    background-repeat: no-repeat;
+    background-position: center center;
+    margin: 20px auto 10px auto;
+    background-color: #DFE0E2;
+    border: 2px solid #C5C5C5;
+}
+
+#login-box {
+    width: 300px;
+    margin: 0 auto;
+}
+
+.toggleRegisterTxtBtn {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) { 
+    #login-box {
+        width: 560px;
+    }
+}

@@ -1,6 +1,20 @@
-# Getting Started with Create React App
+# Tip Splitter Web App Project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+I made this project hoping to save some time to hospitality workers when it comes to split their tips.
+
+### How does it works?
+
+Basically...
+
+# Setup
+
+Here's a little to guide on how to intall this project in your machine.
+
+If you to just want to use it, the app is hosted here -insert link-. 
+It's completely free to create an account for your establishment and use it.
+
+## Configuring the database with Firebase
+This projects uses Firebase for the database. You'll need to copy the ".env.template" file and fill it with your credentials and data, then rename it to ".env" only.
 
 ## Available Scripts
 
