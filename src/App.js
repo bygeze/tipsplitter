@@ -10,12 +10,12 @@ const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(JSON.parse(localStorage.getItem('isAuthenticated') || false));
 
   useEffect(() => {
-    /* DEBUG MESSAGE:
+    // Debug Message:
     if(auth) {
-      console.log("Auth Database: Working");
+      console.log('\x1B[1mAuth Database:\x1B[m' + '\x1B[1;32m Working\x1B[m');
     } else {
-      console.log("Auth Database: Not Working");
-    }*/
+      console.log('\x1B[1mAuth Database:\x1B[m' + '\x1B[1;91m Not Working\x1B[m');
+    }
 
     // Verificar el estado de autenticación al cargar la aplicación
     const storedAuthStatus = JSON.parse(localStorage.getItem('isAuthenticated'));

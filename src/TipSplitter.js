@@ -8,6 +8,7 @@ import Summary from "./Summary.js";
 import './TipSplitter.css';
 
 const TipSplitter = ({ handleLogout }) => {
+  
   const [people, setPeople] = useState([]);
   const [totalHours, setTotalHours] = useState(0);
   const [totalMoney, setTotalMoney] = useState(0);
