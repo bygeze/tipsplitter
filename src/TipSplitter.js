@@ -3,143 +3,82 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import PeopleTable from "./PeopleTable";
 import CalculationTable from "./CalculationTable";
 import { database } from './firebase.js';
-import { ref, get, set, update } from 'firebase/database';
+import { ref, get, set, push, update, remove } from 'firebase/database';
 import Summary from "./Summary.js";
 import './TipSplitter.css';
 
-// Define la función exist
-
-const TipSplitter = ({handleLogout}) => {
+const TipSplitter = ({ handleLogout }) => {
   const [people, setPeople] = useState([]);
-  const [idCounter, setIdCounter] = useState(0);
   const [totalHours, setTotalHours] = useState(0);
   const [totalMoney, setTotalMoney] = useState(0);
   const [hourlyRate, setHourlyRate] = useState(0);
 
-  const roundToEuroStep = (number) => {
-    // If number is already an integer, return it
-    if (Number.isInteger(number)) {
-        return number.toFixed(2);
-    }
-
-    // Otherwise, round to the nearest euro step
-    const roundedNumber = Math.round(number);
-    return roundedNumber.toFixed(2);
-  }
+  const isInitialMount = useRef(true);
 
   const calculateTotalHours = useCallback((people) => {
     const totalHours = people.reduce((total, person) => total + parseFloat(person.hours || 0), 0);
     setTotalHours(totalHours);
   }, [setTotalHours]);
 
-    const fetchPersonsFromFirebase = () => {
-        const uid = localStorage.getItem('uid');
-        const peopleRef = ref(database, `users/${uid}/people`);
-        
-        // Return the promise directly
-        return get(peopleRef).then((snapshot) => {
-          const data = snapshot.val();
-          return data || []; // Return an empty array if data is falsy
-        });
-      };
-
-      const fetchIdCounterFromFirebase = () => {
-        const uid = localStorage.getItem('uid');
-        const idCounterRef = ref(database, `users/${uid}/idCounter`);
-        
-        // Return the promise directly
-        return get(idCounterRef).then((snapshot) => {
-          const data = snapshot.val();
-          return data || []; // Return an empty array if data is falsy
-        });
-      };     
-  
-      const isInitialMount = useRef(true);
-
   useEffect(() => {
     if (isInitialMount.current) {
+      fetchPersonsFromFirebase().then((data) => {
+        console.log('Data from Firebase:', data);
+        setPeople(data);
+      });
 
-      // Skip the first render
       isInitialMount.current = false;
       return;
-    }    
+    }
 
     calculateTotalHours(people);
-  
-    // Your logic for handling changes in 'people'
-    console.log('People changed:', people);
   }, [people, calculateTotalHours]);
 
-  useEffect(() => {
-    fetchPersonsFromFirebase().then((data) => {
-      console.log('Data from Firebase:', data);
-      setPeople(data);
+  const fetchPersonsFromFirebase = () => {
+    const uid = localStorage.getItem('uid');
+    const peopleRef = ref(database, `users/${uid}/people`);
+
+    return get(peopleRef).then((snapshot) => {
+      const data = snapshot.val();
+      const peopleList = data ? Object.entries(data).map(([id, person]) => ({ id, ...person })) : [];
+      return peopleList;
     });
-
-    fetchIdCounterFromFirebase().then((data) => {
-        console.log('Data from Firebase:', data);
-        setIdCounter(data);
-      });
-  }, []); // Only run on mount
-
-
-
-const saveDataToFirebase = (updatedPeople, updatedIdCounter) => {
-    const uid = localStorage.getItem('uid');
-  
-    // Guardar en Firebase asociado al UID
-    if (uid) {
-      const peopleRef = ref(database, `users/${uid}/people`);
-      set(peopleRef, updatedPeople);
-  
-      const idCounterRef = ref(database, `users/${uid}/idCounter`);
-      set(idCounterRef, updatedIdCounter);
-    }
-
   };
-
-
-  const updateDataFromFirebase = (updatedPeople) => {
-    const uid = localStorage.getItem('uid');
-  
-    if (uid && updatedPeople.length > 0) {
-      const peopleObject = updatedPeople.reduce((acc, person) => {
-        acc[person.id] = person;
-        return acc;
-      }, {});
-  
-      const peopleRef = ref(database, `users/${uid}/people`);
-  
-      // Actualizar datos de personas
-      update(peopleRef, peopleObject);
-    }
-  };
-  
-  
 
   const handleAddPerson = (newPerson) => {
-    setPeople((prevPeople) => [...prevPeople, newPerson]);
-    setIdCounter((prevIdCounter) => prevIdCounter + 1);
-    saveDataToFirebase([...people, newPerson], idCounter + 1); // Pass the updated data to the function
+    const uid = localStorage.getItem('uid');
+    const peopleRef = ref(database, `users/${uid}/people`);
+    const newPersonRef = push(peopleRef);
+    const newPersonId = newPersonRef.key;
+
+    const updatedPeople = [...people, { id: newPersonId, ...newPerson }];
+    setPeople(updatedPeople);
+    set(newPersonRef, newPerson);
   };
 
   const handleModifyPerson = (modifiedPerson) => {
+    const uid = localStorage.getItem('uid');
+    const personRef = ref(database, `users/${uid}/people/${modifiedPerson.id}`);
+
     const updatedPeople = people.map((person) =>
       person.id === modifiedPerson.id ? modifiedPerson : person
     );
     setPeople(updatedPeople);
-    updateDataFromFirebase(updatedPeople); // Guardar datos al añadir persona
-
+    update(personRef, modifiedPerson);
   };
 
+  const handleDeletePerson = (personId) => {
+    const updatedPeople = people.filter(person => person.id !== personId);
+    setPeople(updatedPeople);
 
+    const uid = localStorage.getItem('uid');
+    const personRef = ref(database, `users/${uid}/people/${personId}`);
+    remove(personRef);
+  };
 
   const handleCalculate = () => {
-    // Calcular precio por hora
     const hourlyRate = totalHours !== 0 ? totalMoney / totalHours : 0;
     setHourlyRate(hourlyRate);
-    //updateDataFromFirebase(); // Guardar datos al añadir persona
-
   };
 
   const handleCalculateAmounts = () => {
@@ -148,19 +87,43 @@ const saveDataToFirebase = (updatedPeople, updatedIdCounter) => {
       return { ...person, money: calculatedMoney };
     });
     setPeople(updatedPeople);
-    
+  };
+
+  const roundToEuroStep = (number) => {
+    if (Number.isInteger(number)) {
+      return number.toFixed(2);
+    }
+    const roundedNumber = Math.round(number);
+    return roundedNumber.toFixed(2);
   };
 
   return (
     <div className="container mt-2">
-        <div className="row ts-topbar">
-            <div className="col-8 ts-app-label"><h1>TipSplitter</h1></div>
-            <div className={"col-4 justify-content-end ts-logout"}><p className="t-right" onClick={handleLogout}>Cerrar sesión</p></div>
-        </div>
+      <div className="row ts-topbar">
+        <div className="col-8 ts-app-label"><h1>TipSplitter</h1></div>
+        <div className={"col-4 justify-content-end ts-logout"}><p className="t-right" onClick={handleLogout}>Cerrar sesión</p></div>
+      </div>
 
-      <PeopleTable round={roundToEuroStep} people={people} onAddPerson={handleAddPerson} onModifyPerson={handleModifyPerson} idCounter={idCounter} />
-      <CalculationTable round={roundToEuroStep} totalHours={totalHours} totalMoney={totalMoney} setTotalMoney={setTotalMoney} hourlyRate={hourlyRate} handleCalculate={handleCalculate} handleCalculateAmounts={handleCalculateAmounts}/>
-      <Summary round={roundToEuroStep} people={people} />
+      <PeopleTable
+        round={roundToEuroStep}
+        people={people}
+        onAddPerson={handleAddPerson}
+        onModifyPerson={handleModifyPerson}
+        onDeletePerson={handleDeletePerson}
+      />
+      <CalculationTable
+        round={roundToEuroStep}
+        totalHours={totalHours}
+        totalMoney={totalMoney}
+        setTotalMoney={setTotalMoney}
+        hourlyRate={hourlyRate}
+        handleCalculate={handleCalculate}
+        handleCalculateAmounts={handleCalculateAmounts}
+      />
+      <Summary
+        round={roundToEuroStep}
+        people={people}
+      />
     </div>
   );
 };

@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import "./PeopleTable.css";
 
-const PeopleTable = ({ round, people, onAddPerson, onModifyPerson, idCounter }) => {
+const PeopleTable = ({ round, people, onAddPerson, onModifyPerson, onDeletePerson, idCounter }) => {
   const [newPerson, setNewPerson] = useState({
-    id: idCounter + 1,
     name: "",
     hours: "",
     money: 0  // Nueva propiedad "money"
@@ -15,7 +14,6 @@ const PeopleTable = ({ round, people, onAddPerson, onModifyPerson, idCounter }) 
     onAddPerson(newPerson);
 
     setNewPerson({
-      id: newPerson.id + 1,
       name: "",
       hours: "",
       money: 0  // Reiniciamos la nueva propiedad "money" para la siguiente persona
@@ -35,6 +33,10 @@ const PeopleTable = ({ round, people, onAddPerson, onModifyPerson, idCounter }) 
     setPeopleListCollapsed(!peopeListCollapsed);
   }
 
+  const handleDelete = (id) => {
+    onDeletePerson(id);
+  };
+
   return (
     <div className="container pb-2">
         <div className="pt-topbar row">
@@ -45,10 +47,11 @@ const PeopleTable = ({ round, people, onAddPerson, onModifyPerson, idCounter }) 
           <table className="table  m-0">
           <thead>
             <tr>
-              <th className="d-none">  ID</th>
+              <th className="d-none">ID</th>
               <th>Nombre</th>
               <th>Cant. hrs.</th>
               <th>A percibir</th>
+              <th>x</th>
             </tr>
           </thead>
           <tbody>
@@ -74,11 +77,12 @@ const PeopleTable = ({ round, people, onAddPerson, onModifyPerson, idCounter }) 
                   />
                 </td>
                 <td>{round(person.money.toFixed(2))}€</td> {/* Mostrar la nueva propiedad "money" */}
+                <td><button className="btn btn-danger" onClick={() => handleDelete(person.id)}>Delete</button></td>
               </tr>
             ))}
             <tr>
               <td  className="d-none">
-                <input type="text" name="id" disabled value={idCounter + 1} />
+                <input type="text" name="id" disabled value={idCounter} />
               </td>
               <td>
                 <input size="9" type="text" name="name" value={newPerson.name} onChange={handleInputChange} />
